@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.10.0/math.min.js"></script>
+</head>
+<body>
+  <h1>
+    Hey open up the console, this is a library.
+  </h1>
+  <script type="text/javascript">
+    function isMathFunc(func) {
+      var simpleFunc = func;
+      try {
+        simpleFunc  = math.simplify(func);
+      }
+      catch(err) {
+        console.log('please enter a mathmatical funtion');
+        return false;
+      }
+      return true;
+    }
+//  simplifies  the inputed values for fx and gx then replaces every instance of x inside fx with gx, and then simplifies the equation amd returns it
+  function fxOfGx(fx,gx){
+    if(!isMathFunc(fx) || !isMathFunc(gx)) {
+        return false;
+    }
+    fx = math.simplify(fx);
+    gx = math.simplify(gx);
+    var final = fx.toString().replace(/x/g, gx.toString());
+    return math.simplify(final).toString();
+  }
+    // does the same thing as the last function but with replaces every sintace of  x again after the first time with another set variable/equation.
+    function fxOfGxX(fx,gx,X){
+    if(!isMathFunc(fx) || !isMathFunc(gx)) {
+        return false;
+    }
+    fx = math.simplify(fx);
+    gx = math.simplify(gx);
+    X = math.simplify(X);
+    var gxofx = fx.toString().replace(/x/g, gx.toString());
+    var gxofxofx = gxofx.toString().replace(/x/g, X.toString());
+    return math.simplify(gxofxofx).toString();
+  }
+//switches x and y in the inputed equation. want to expand to solve for y.
+  function inverse(eq){
+    eq = eq.toString().replace(/y/g, "temp");
+    eq = eq.toString().replace(/x/g, "y");
+    eq = eq.toString().replace(/temp/g,"x");
+    return eq;
+  }
+    
+    function alg() {
+      
+      let endPoint = arguments[0];
+      for(let i = 1;i<arguments.length;i++) {
+        let temp = math.simplify(arguments[i]);
+        
+        endPoint = endPoint.toString().replace(/x/g,temp.toString());
+        endPoint = math.simplify(endPoint).toString();
+      }
+      if(isNumber(endPoint)) {
+        return parseFloat(endPoint);
+      }
+      return endPoint;
+    }
+    
+    function isNumber(n) { return /^-?[\d.]+$/.test(n); } 
+    
+    function findVertex(a,b,c) {
+      var arr = [];
+      if(a!==0) {
+        arr.push(-b/(2*a));
+        var findY = math.simplify('a*(x*x)+b*x+c');
+        console.log(findY.toString());
+        foundY = findY.eval({x:arr[0],
+                             a:a,
+                             b:b,
+                             c:c});
+        arr.push(foundY);
+      }
+      return arr;
+    } 
+    
+    function findZeros(a,b,c) {
+      var zeros = [];
+      var quadraticPositive = math.simplify('(-b+sqrt(b^2-4*d*a))/(2*a)');
+      var quadraticNegative = math.simplify('(-b-sqrt(b^2-4*a*d))/(2*a)');
+      zeros.push(quadraticPositive.eval({a:a,
+                                         b:b,
+                                         d:c}));
+      zeros.push(quadraticNegative.eval({a:a,
+                                         b:b,
+                                         d:c}));
+      if(arguments[3]) {
+        return zeros;
+      } else {
+        return filterOutI(zeros)
+      }
+    }
+    
+    function filterOutI(arr) {
+      return arr.filter((v) => {
+        return typeof(v) !== "object";
+      });
+    }
+    
+    function help() {
+      console.log("alg() takes in f(x) and g(x) and however many fuctions and simplifies them");
+      console.log("inverse(equation) takes in equation with x and y and finds inverse");
+      console.log("isNumber(var) checks if input is a number");
+      console.log("findVertex(numA,numB,numC) takes in A B and C and outputs a vertex for a quadratic");
+      console.log("findZeros(numA,numB,numC) takes in A B and C and outputs the Zeros for a quadratic");
+    }
+  </script>
+</body>
+</html>
